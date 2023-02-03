@@ -1,18 +1,37 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Header from "./components/Header";
 import Inputbox from "./components/Inputbox";
 import Sort from "./components/Sort";
 import Editbox from "./components/Editbox";
 import Tableheader from "./components/Tableheader";
 import Search, {setSearchText} from "./components/Search"
-import './index.css'
 import Tablebody from "./components/Tablebody";
+import './index.css'
+
+const win = window.localStorage;
+
+const getLocalItems = () => {
+  let list = win.getItem("content");
+  console.log(list);
+
+  if(list){
+    return JSON.parse(win.getItem("content"));
+  }
+  else{
+    return [];
+  }
+}
 
 function App() {
 
-  const [todoItems, setNewItem] = useState([]);
+  const [todoItems, setNewItem] = useState(getLocalItems());
   const [isEditing, setEditing] = useState(false);
   const [editItem, setEditItem] = useState({});
+
+  useEffect(() => {
+    win.setItem("content",JSON.stringify(todoItems));
+  },[todoItems]);
+
 
   function addTodoItem(todoContent){
     console.log(todoContent);
@@ -115,6 +134,7 @@ function App() {
       
     </div>
   );
+  
 }
 
 export default App;
